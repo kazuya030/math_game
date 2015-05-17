@@ -14,6 +14,20 @@ function shuffle(arr) {
     return arr;
 }
 
+function getCoord(name){
+    var trans = d3.transform(d3.select('#'+name).attr('transform'));
+    return {x: trans.translate[0], y: trans.translate[1]}
+}
+
+function getLinePref(name){
+    var i;
+    var source_val = getCoord(name);
+    var ans = [];
+    for(i=0;i<N;i++){
+        ans.push({source: source_val, target: getCoord(map_pref[name][i]), width: (N-i)*2});
+    }
+    return ans;
+}
 
 
 var width = 300;
@@ -59,6 +73,17 @@ var g = svg.selectAll('g').data(dataset).enter().append('g')
         })
         .attr('id', function(d){ return d.name; });
 
+
+function showLinePref(d){
+    svg.selectAll('path').data(getLinePref(d.name)).enter()
+        .append('g')
+        .attr('class', d.sex)
+        .append('path')
+        .attr('class', 'line-pref')
+        .attr('stroke-width', function(d){return d.width})
+        .attr('d',diagonal);
+}
+
 g.append('circle')
     .attr('r', function(d) {
         return d.charm*10;
@@ -66,26 +91,10 @@ g.append('circle')
     .attr('class', function(d){
         return d.sex;
     })
-    .on('mouseover', function(d){
-        svg.selectAll('path').data(getLinePref(d.name)).enter()
-            .append('path')
-            .attr('fill', 'none')
-            .attr('class', 'line-pref')
-            .attr('stroke-width', function(d){return d.width})
-            .attr('d',diagonal);
-
-    })
+    .on('mouseover', showLinePref)
+    .on('click', showLinePref)
     .on('mouseout', function(){
         svg.selectAll('.line-pref').data([]).exit().remove()
-    })
-    .on('click', function(d){
-        svg.selectAll('path').data(getLinePref(d.name)).enter()
-            .append('path')
-            .attr('fill', 'none')
-            .attr('class', 'line-pref')
-            .attr('stroke-width', function(d){return d.width})
-            .attr('d',diagonal);
-
     });
 
 g.append('text')
@@ -94,20 +103,7 @@ g.append('text')
     .text(function(d){ return d.name; });
 
 
-function getCenterXY(name){
-    var trans = d3.transform(d3.select('#'+name).attr('transform'));
-    return {x: trans.translate[0], y: trans.translate[1]}
-}
 
-function getLinePref(name){
-    var i;
-    var source_val = getCenterXY(name);
-    var ans = [];
-    for(i=0;i<N;i++){
-        ans.push({source: source_val, target: getCenterXY(map_pref[name][i]), width: (N-i)*2});
-    }
-    return ans;
-}
 
 
 

@@ -6,15 +6,18 @@ circle{
     stroke-width: 2;
 }
 
-circle.male{
+.male{
     stroke: #333577;
     fill : #7F81B2;
 }
-circle.female{
+
+.female{
     stroke: #A8383B;
     fill: #FDA8AB;
 }
 
 .line-pref{
-    stroke: #328A2E;
+    fill: none;
+    stroke-linecap: round;
+    opacity: .5;
 }
