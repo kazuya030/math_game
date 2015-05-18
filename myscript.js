@@ -13,48 +13,33 @@ function shuffle(arr) {
     }
     return arr;
 }
-function changeSex(sex){
-    if (sex=='male'){
-        return 'female';
-    }else{
-        return 'male';
-    }
-}
 
-function getCoord(name, sex){
-    var trans = d3.transform(d3.select('#'+name).attr('transform'));
-    return {x: trans.translate[0]+ ((sex=='male')?15:-15), y: trans.translate[1]}
-}
-
-function getLinePref(name, sex){
-    var i;
-    var source_val = getCoord(name, sex);
+function getLinePref(name, sex, i){
+    var j;
+    var dir = (sex=='male')?1:-1;
     var ans = [];
-    for(i=0;i<N;i++){
-        ans.push({source: source_val, target: getCoord(map_pref[name][i],changeSex(sex)), width: (N-i)*2});
+    for(j=0;j<N;j++){
+        name_target = (sex=='male')?female[j]:male[j];
+        ans.push({source: {x:dir*(r+5), y:0}, target: {x:dir*(95-r), y:(j-(i%N))*50}, width: (N-map_pref[name].indexOf(name_target))*2});
     }
     return ans;
 }
 
-function showLinePref(d){
-    var i;
-    var l_target= d.sex==="male"? female : male;
-    svg.selectAll('path').data(getLinePref(d.name, d.sex)).enter()
-        .append('g')
-        .attr('class', d.sex)
-        .append('path')
-        .attr('class', 'line-pref')
-        .attr('stroke-width', function(d){return d.width})
-        .attr('d',diagonal);
-    for(i=0;i<N;i++){
-        var num = map_pref[l_target[i]].indexOf(d.name)+1;
-        svg.select('#'+l_target[i])
-            .append('text')
-            .attr('class', 'num-pref')
-            .attr('dy', ".35em")
-            .attr()
-            .text(num);
+function onHover(){
+    var target, rank;
+    var id = this.parentNode.id;
+    d3.select('#'+id).selectAll('path').attr('visibility', 'visible');
+    for(target in map_pref){
+        rank = map_pref[target].indexOf(id)+1;
+        if (rank>0) {
+            d3.select('#' + target + ' .num-pref').text(rank);
+        }
     }
+}
+function outHover(){
+    var id = this.parentNode.id;
+    d3.select('#'+id).selectAll('path').attr('visibility', 'hidden');
+    d3.selectAll('.num-pref').text('');
 }
 
 var width = 300;
@@ -85,36 +70,29 @@ for (i=0;i<N;i++){
 //  参加者の dataset  を生成
 var dataset = [];
 for (i=0;i<N;i++){
-    dataset.push({name: male[i], sex:'male', charm: 1});
+    dataset.push({name: male[i], sex:'male', charm: r});
 }
 for (i=0;i<N;i++){
-    dataset.push({name: female[i], sex:'female', charm: 1});
+    dataset.push({name: female[i], sex:'female', charm: r});
 }
 
 
 var g = svg.selectAll('g').data(dataset).enter().append('g')
-        .attr({
-            // 座標設定を動的に行う
-            transform: function(d, i) {
-                return 'translate(' + (d.sex==='male' ? 100 : 200) + ',' + ((i%N)*50+50) + ')';
-            }
-        })
-        .attr('id', function(d){ return d.name; });
+    .attr({
+        // 座標設定を動的に行う
+        transform: function(d, i) {
+            return 'translate(' + (d.sex==='male' ? 100 : 200) + ',' + ((i%N)*50+50) + ')';
+        }
+    })
+    .attr('id', function(d){ return d.name; })
+    .attr('class', function(d){ return d.sex; });
 
 
 g.append('circle')
-    .attr('r', function(d) {
-        return d.charm*r;
-    })
-    .attr('class', function(d){
-        return d.sex;
-    })
-    .on('mouseover', showLinePref)
-    .on('click', showLinePref)
-    .on('mouseout', function(){
-        svg.selectAll('.line-pref').data([]).exit().remove();
-        svg.selectAll('.num-pref').data([]).exit().remove();
-    });
+    .attr('r', function(d) { return d.charm; })
+    .on('mouseover', onHover)
+    .on('click', onHover)
+    .on('mouseout', outHover);
 
 g.append('text')
     .attr('x', function(d){ return (d.sex=='male')?(-90):(r+5);})
@@ -123,7 +101,14 @@ g.append('text')
 
 
 
+g.selectAll('path').data(function(d, i){ return getLinePref(d.name, d.sex, i) }).enter().append('path')
+    .attr('class', 'line-pref')
+    .attr('stroke-width', function(d){ return d.width})
+    .attr('d',diagonal)
+    .attr('visibility', 'hidden');
 
-
-
+g.append('text')
+    .attr('class', 'num-pref')
+    .attr('dy', ".35em")
+    .text('');
 
