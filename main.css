@@ -5,6 +5,9 @@ body {
 circle{
     stroke-width: 2;
 }
+circle.rejected{
+    stroke-width: 10;
+}
 
 .male{
     stroke: #333577;
@@ -19,6 +22,15 @@ circle{
 .line-pref{
     fill: none;
     stroke-linecap: round;
+    opacity: .5;
+}
+
+.line-apply{
+    fill: none;
+    stroke-linecap: round;
+    stroke-width: 5;
+    stroke-dasharray: 5, 10;
+    stroke: #338A2E;
     opacity: .5;
 }
 
