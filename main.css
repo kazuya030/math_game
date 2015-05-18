@@ -21,3 +21,9 @@ circle{
     stroke-linecap: round;
     opacity: .5;
 }
+
+.num-pref{
+    stroke: white;
+    fill: white;
+    text-anchor: middle;
+}

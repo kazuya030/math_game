@@ -29,6 +29,26 @@ function getLinePref(name){
     return ans;
 }
 
+function showLinePref(d){
+    var i;
+    var l_target= d.sex==="male"? female : male;
+    svg.selectAll('path').data(getLinePref(d.name)).enter()
+        .append('g')
+        .attr('class', d.sex)
+        .append('path')
+        .attr('class', 'line-pref')
+        .attr('stroke-width', function(d){return d.width})
+        .attr('d',diagonal);
+    for(i=0;i<N;i++){
+        var num = map_pref[l_target[i]].indexOf(d.name)+1;
+        svg.select('#'+l_target[i])
+            .append('text')
+            .attr('class', 'num-pref')
+            .attr('dy', ".35em")
+            .attr()
+            .text(num);
+    }
+}
 
 var width = 300;
 var height = 300;
@@ -74,16 +94,6 @@ var g = svg.selectAll('g').data(dataset).enter().append('g')
         .attr('id', function(d){ return d.name; });
 
 
-function showLinePref(d){
-    svg.selectAll('path').data(getLinePref(d.name)).enter()
-        .append('g')
-        .attr('class', d.sex)
-        .append('path')
-        .attr('class', 'line-pref')
-        .attr('stroke-width', function(d){return d.width})
-        .attr('d',diagonal);
-}
-
 g.append('circle')
     .attr('r', function(d) {
         return d.charm*10;
@@ -94,7 +104,8 @@ g.append('circle')
     .on('mouseover', showLinePref)
     .on('click', showLinePref)
     .on('mouseout', function(){
-        svg.selectAll('.line-pref').data([]).exit().remove()
+        svg.selectAll('.line-pref').data([]).exit().remove();
+        svg.selectAll('.num-pref').data([]).exit().remove();
     });
 
 g.append('text')
