@@ -13,18 +13,25 @@ function shuffle(arr) {
     }
     return arr;
 }
-
-function getCoord(name){
-    var trans = d3.transform(d3.select('#'+name).attr('transform'));
-    return {x: trans.translate[0], y: trans.translate[1]}
+function changeSex(sex){
+    if (sex=='male'){
+        return 'female';
+    }else{
+        return 'male';
+    }
 }
 
-function getLinePref(name){
+function getCoord(name, sex){
+    var trans = d3.transform(d3.select('#'+name).attr('transform'));
+    return {x: trans.translate[0]+ ((sex=='male')?15:-15), y: trans.translate[1]}
+}
+
+function getLinePref(name, sex){
     var i;
-    var source_val = getCoord(name);
+    var source_val = getCoord(name, sex);
     var ans = [];
     for(i=0;i<N;i++){
-        ans.push({source: source_val, target: getCoord(map_pref[name][i]), width: (N-i)*2});
+        ans.push({source: source_val, target: getCoord(map_pref[name][i],changeSex(sex)), width: (N-i)*2});
     }
     return ans;
 }
@@ -32,7 +39,7 @@ function getLinePref(name){
 function showLinePref(d){
     var i;
     var l_target= d.sex==="male"? female : male;
-    svg.selectAll('path').data(getLinePref(d.name)).enter()
+    svg.selectAll('path').data(getLinePref(d.name, d.sex)).enter()
         .append('g')
         .attr('class', d.sex)
         .append('path')
@@ -52,6 +59,7 @@ function showLinePref(d){
 
 var width = 300;
 var height = 300;
+var r=15;
 var i;
 
 var svg = d3.select('body').append('svg')
@@ -88,7 +96,7 @@ var g = svg.selectAll('g').data(dataset).enter().append('g')
         .attr({
             // 座標設定を動的に行う
             transform: function(d, i) {
-                return 'translate(' + (d.sex==='male' ? 50 : 200) + ',' + ((i%N)*50+50) + ')';
+                return 'translate(' + (d.sex==='male' ? 100 : 200) + ',' + ((i%N)*50+50) + ')';
             }
         })
         .attr('id', function(d){ return d.name; });
@@ -96,7 +104,7 @@ var g = svg.selectAll('g').data(dataset).enter().append('g')
 
 g.append('circle')
     .attr('r', function(d) {
-        return d.charm*10;
+        return d.charm*r;
     })
     .attr('class', function(d){
         return d.sex;
@@ -109,7 +117,7 @@ g.append('circle')
     });
 
 g.append('text')
-    .attr('x', 15)
+    .attr('x', function(d){ return (d.sex=='male')?(-90):(r+5);})
     .attr('dy', ".35em")
     .text(function(d){ return d.name; });
 
