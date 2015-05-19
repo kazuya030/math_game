@@ -6,15 +6,27 @@
     <title>合コンマッチング</title>
 </head>
 <body>
+<div>
+    <p>
+        男性5人と女性5人の合コンマッチングを考える。<br>
+        NEXT ボタンを押すとステップが進む。<br>
+        各ステップは「アプローチ」と「判断」からなる。<br>
+        前のステップでふられた男性（太い丸で表示）が<br>
+        次のステップで別の女性にアプローチする。<br>
+    </p>
+</div>
+
+
 <div class="ui-field-contain">
-    <button id="reset" class="ui-btn">|<<</button>
-    <button id="step" class="ui-btn">&gt;</button>
+    <button id="reset" class="ui-btn">Reset</button>
+    <button id="step" class="ui-btn">NEXT</button>
     <!--    <button id="go" class="ui-btn">&gt;&gt;|</button> -->
 </div>
-<label id="label_step">before start</label>
 
 <div id="svg-container"></div>
 
+<div id="label_step">
+</div>
 </body>
 <script src="myscript.js"></script>
 

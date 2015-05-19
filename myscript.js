@@ -82,7 +82,7 @@ function reset(){
     }
     d3.select('#step').attr('disabled', null);
 
-    d3.select('#label_step').node().innerHTML = 'before Start';
+    d3.select('#label_step').node().innerHTML = 'NEXT ボタンを押すとスタートします';
     if(g_apply) {
         g_apply.selectAll('path').data([]).exit().remove();
     }
@@ -91,7 +91,8 @@ function reset(){
 }
 
 function addStep(){
-    var i, j, name_m, name_f, l_applying, l_rank, rank_top, name_top, rank_m, rank_f;
+    var i, j, name_m, name_f, l_applying, l_rank, rank_top, name_top, rank_m, rank_f, text_label;
+    text_label='';
     if(isApply){
         male_rejected = [];
         for(i=0;i<N;i++){
@@ -109,6 +110,7 @@ function addStep(){
                 for(j=0;j<l_applying.length;j++){
                     if(l_applying[j] !== name_top){
                         male_rejected.push(l_applying[j]);
+                        text_label += name_f + ' が ' + l_applying[j] + 'を拒否<br>';
                     }
                 }
                 map_applying[name_f] = [name_top];
@@ -117,7 +119,7 @@ function addStep(){
         isApply = false;
         if(male_rejected.length==0) {
             d3.select('#step').attr('disabled', true);
-            d3.select('#label_step').node().innerHTML = 'step ' + step + ' : Complete';
+            d3.select('#label_step').node().innerHTML = 'step ' + step + ' : 決定！！';
 
             for(name_f in map_applying){
                 name_m = map_applying[name_f][0];
@@ -133,21 +135,23 @@ function addStep(){
 
     } else {
         step++;
-
         for(i=0;i<male_rejected.length;i++){
             name_m = male_rejected[i];
             name_f = map_pref[name_m][ map_reject[name_m]++ ];
             map_applying[name_f].push(name_m);
+            text_label += name_m + ' が ' + name_f + ' にアプローチ（第' + map_reject[name_m] +'候補）<br>';
+            console.log(text_label);
         }
         male_rejected = [];
         isApply = true;
     }
+    console.log(text_label);
     g_apply.selectAll('path').data([]).exit().remove();
     g_apply.selectAll('path').data(getLinePath(map_applying)).enter().append('path')
         .attr('class', 'line-apply')
         .attr('d',diagonal);
     drawRejected();
-    d3.select('#label_step').node().innerHTML = 'step ' + step + ' : phase ' + (isApply ? 'apply' : 'reject');
+    d3.select('#label_step').node().innerHTML = 'step ' + step + ' : ' + (isApply ? 'アプローチ' : '判断')+'<br>'+text_label;
 
 }
 
