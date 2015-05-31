@@ -25,14 +25,22 @@ circle.rejected{
     opacity: .5;
 }
 
-.line-apply{
+.line-match{
     fill: none;
     stroke-linecap: round;
+    stroke: #338A2E;
     stroke-width: 5;
     stroke-dasharray: 5, 10;
-    stroke: #338A2E;
     opacity: .5;
 }
+
+.fix{
+    stroke-dasharray: none;
+    opacity: .8;
+    stroke-width: 8;
+
+}
+
 
 .num-pref{
     stroke: white;

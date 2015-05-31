@@ -121,6 +121,10 @@ function addStep(){
             d3.select('#step').attr('disabled', true);
             d3.select('#label_step').node().innerHTML = 'step ' + step + ' : 決定！！';
 
+            g_apply.selectAll('path')
+                .attr('class', 'line-match fix');
+
+
             for(name_f in map_applying){
                 name_m = map_applying[name_f][0];
                 rank_m = map_pref[name_m].indexOf(name_f)+1;
@@ -148,7 +152,7 @@ function addStep(){
     console.log(text_label);
     g_apply.selectAll('path').data([]).exit().remove();
     g_apply.selectAll('path').data(getLinePath(map_applying)).enter().append('path')
-        .attr('class', 'line-apply')
+        .attr('class', 'line-match')
         .attr('d',diagonal);
     drawRejected();
     d3.select('#label_step').node().innerHTML = 'step ' + step + ' : ' + (isApply ? 'アプローチ' : '判断')+'<br>'+text_label;
@@ -193,7 +197,18 @@ var female = ['Jane', 'Kate', 'Linda', 'Mary',  'Natalie'];
 var map_pref, map_reject, map_applying; // map
 var male_rejected, dataset; //list
 reset();
-
+map_pref = {
+    "Adam":["Kate","Mary","Jane","Natalie","Linda"],
+    "Jane":["Edgar","Dick","Adam","Bill","Charles"],
+    "Bill":["Mary","Jane","Kate","Linda","Natalie"],
+    "Kate":["Adam","Dick","Edgar","Bill","Charles"],
+    "Charles":["Natalie","Mary","Jane","Linda","Kate"],
+    "Linda":["Bill","Dick","Edgar","Charles","Adam"],
+    "Dick":["Jane","Natalie","Kate","Linda","Mary"],
+    "Mary":["Charles","Bill","Dick","Adam","Edgar"],
+    "Edgar":["Kate","Mary","Natalie","Jane","Linda"],
+    "Natalie":["Dick","Bill","Edgar","Charles","Adam"]
+};
 
 var g = svg.selectAll('g').data(dataset).enter().append('g')
     .attr({
