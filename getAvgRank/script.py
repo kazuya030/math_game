@@ -1,6 +1,13 @@
 # coding: utf8
 
 def match(N):
+    """
+    GSアルゴリズムのマッチ結果の男女の各満足度を返す
+
+    :param N: 男女の各参加者数
+    :return: (男性の平均志望度、女性の平均志望度)
+    """
+
     import random
 
     # 好みの順位作成。最初にひな形を用意
@@ -61,7 +68,7 @@ def match(N):
     # 男女の平均志望度を返す
     return avg_rank_m, avg_rank_f
 
-if __name__ == '__main__':
+def plot():
     l_N = [5, 10, 20, 50, 100, 200, 500, 1000, 2000]*5
     avg = [match(_N) for _N in l_N]
 
@@ -72,4 +79,6 @@ if __name__ == '__main__':
 
     plt.show()
 
+if __name__ == '__main__':
+    match(10)
     exit()
