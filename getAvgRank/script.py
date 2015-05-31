@@ -17,10 +17,6 @@ def match(N):
     map(random.shuffle, pref_m)
     map(random.shuffle, pref_f)
 
-    # 好みの序列
-    # print pref_m
-    # print pref_f
-
     # ふられた男＝次にアタックする男の集合。最初は全員
     rejected_male = set(range(N))
     # 現在、第何志望まで来たかの配列。最初は全員第一志望。
@@ -54,9 +50,6 @@ def match(N):
         # ふられた男は志望女性のランクを下げる
         for i_m in rejected_male:
             rank_m[i_m] += 1
-
-    # マッチ結果
-    # print set_applying
 
     # 男の平均志望度
     avg_rank_m =  sum(rank_m) / float(N)
